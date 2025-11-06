@@ -7,8 +7,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/shorten" element={<ShortenPage />} />
+        <Route path="/" element={<ShortenPage />} />
       </Routes>
     </Router>
   );

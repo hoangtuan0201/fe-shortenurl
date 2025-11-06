@@ -47,7 +47,7 @@ const ShortenPage = () => {
 
     try {
       const response = await shortenUrl(url);
-      setShortUrl(response.shortUrl);
+      setShortUrl(response.shortLink);
       setLoading(false);
     } catch (err) {
       setError('An error occurred while shortening the URL');
@@ -65,12 +65,21 @@ const ShortenPage = () => {
   };
 
   return (
-    <Box sx={{ my: 4, textAlign: 'center' }}>
+    <Box sx={{ 
+        minHeight: '80vh',              // full screen height
+        display: 'flex',                 // use flexbox
+        flexDirection: 'column',
+        justifyContent: 'center',        // center vertically
+        alignItems: 'center',            // center horizontally
+        bgcolor: 'background.default',   // optional background
+        px: 2,
+      }}
+    >
       <Typography variant="h4" component="h1" gutterBottom>
         URL Shortener
       </Typography>
       
-      <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
+      <Paper elevation={3} sx={{ p: 4, mt: 2, minWidth: 600 }}>
         <form onSubmit={handleSubmit}>
           <TextField
             fullWidth
@@ -103,7 +112,10 @@ const ShortenPage = () => {
         </form>
 
         {shortUrl && (
-          <Box sx={{ mt: 4, p: 2, bgcolor: 'background.paper', borderRadius: 1, display: 'flex', alignItems: 'center' }}>
+          <Box sx={{ mt: 2, bgcolor: 'background.paper', borderRadius: 1,  }}>
+            <Typography variant="body1" sx={{ mr: 2 }}>
+              Shortened URL:
+            </Typography>
             <TextField
               fullWidth
               variant="outlined"
