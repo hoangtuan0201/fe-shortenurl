@@ -9,7 +9,8 @@ import {
   Snackbar,
   Alert,
   IconButton,
-  InputAdornment
+  InputAdornment,
+  Container
 } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import LinkIcon from '@mui/icons-material/Link';
@@ -65,25 +66,21 @@ const ShortenPage = () => {
   };
 
   return (
-    <Box sx={{ 
-        minHeight: '80vh',              // full screen height
-        display: 'flex',                 // use flexbox
-        flexDirection: 'column',
-        justifyContent: 'center',        // center vertically
-        alignItems: 'center',            // center horizontally
-        bgcolor: 'background.default',   // optional background
-        px: 2,
-      }}
-    >
-      <Typography variant="h4" component="h1" gutterBottom>
-        URL Shortener
-      </Typography>
+    <Container maxWidth="sm" sx={{ minHeight: '60vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+      <Box sx={{ textAlign: 'center', mb: 4 }}>
+        <Typography variant="h3" component="h1" sx={{ fontWeight: 700, mb: 1, color: 'text.primary' }}>
+          ShortURL
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          Simple & fast URL shortener
+        </Typography>
+      </Box>
       
-      <Paper elevation={3} sx={{ p: 4, mt: 2, minWidth: 600 }}>
+      <Paper elevation={0} sx={{ p: 4, borderRadius: 3, border: '1px solid', borderColor: 'divider' }}>
         <form onSubmit={handleSubmit}>
           <TextField
             fullWidth
-            label="Enter URL to shorten"
+            placeholder="Paste your long URL here"
             variant="outlined"
             value={url}
             onChange={handleUrlChange}
@@ -92,45 +89,61 @@ const ShortenPage = () => {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <LinkIcon />
+                  <LinkIcon sx={{ color: 'text.secondary' }} />
                 </InputAdornment>
               ),
             }}
-            sx={{ mb: 3 }}
+            sx={{ 
+              mb: 3,
+              '& .MuiOutlinedInput-root': {
+                borderRadius: 2,
+                backgroundColor: 'grey.50'
+              }
+            }}
           />
           
           <Button 
             type="submit" 
             variant="contained" 
-            color="primary" 
             fullWidth 
             size="large"
             disabled={loading}
+            sx={{ 
+              borderRadius: 2,
+              py: 1.5,
+              fontWeight: 600,
+              textTransform: 'none',
+              fontSize: '1.1rem'
+            }}
           >
-            {loading ? <CircularProgress size={24} /> : 'Shorten'}
+            {loading ? <CircularProgress size={24} /> : 'Shorten URL'}
           </Button>
         </form>
 
         {shortUrl && (
-          <Box sx={{ mt: 2, bgcolor: 'background.paper', borderRadius: 1,  }}>
-            <Typography variant="body1" sx={{ mr: 2 }}>
+          <Box sx={{ mt: 4, pt: 3, borderTop: '1px solid', borderColor: 'divider' }}>
+            <Typography variant="caption" color="text.secondary" sx={{ mb: 2, display: 'block' }}>
               Shortened URL:
             </Typography>
-            <TextField
-              fullWidth
-              variant="outlined"
-              value={shortUrl}
-              InputProps={{
-                readOnly: true,
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={copyToClipboard} edge="end">
-                      <ContentCopyIcon />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
+            <Box sx={{ display: 'flex', gap: 1 }}>
+              <TextField
+                fullWidth
+                variant="outlined"
+                value={shortUrl}
+                size="small"
+                InputProps={{
+                  readOnly: true,
+                  sx: { borderRadius: 2, fontFamily: 'monospace' }
+                }}
+              />
+              <IconButton 
+                onClick={copyToClipboard} 
+                color="primary"
+                sx={{ border: '1px solid', borderColor: 'primary.main', borderRadius: 2 }}
+              >
+                <ContentCopyIcon />
+              </IconButton>
+            </Box>
           </Box>
         )}
       </Paper>
@@ -145,7 +158,7 @@ const ShortenPage = () => {
           Copied to clipboard!
         </Alert>
       </Snackbar>
-    </Box>
+    </Container>
   );
 };
 
