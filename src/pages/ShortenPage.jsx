@@ -97,7 +97,11 @@ const ShortenPage = () => {
               mb: 3,
               '& .MuiOutlinedInput-root': {
                 borderRadius: 2,
-                backgroundColor: 'grey.50'
+                bgcolor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'grey.50'
+              },
+              '& input::placeholder': {
+                color: 'text.secondary',
+                opacity: 1
               }
             }}
           />

@@ -1,8 +1,10 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
+import { AppBar, Toolbar, Typography, Button, Box, IconButton, Tooltip } from '@mui/material';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
-const Header = () => {
+const Header = ({ mode = 'light', onToggleTheme }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const isAuthenticated = !!localStorage.getItem('token');
@@ -13,7 +15,7 @@ const Header = () => {
   };
 
   return (
-    <AppBar position="static" elevation={0} sx={{ bgcolor: 'white', color: 'text.primary' }}>
+    <AppBar position="static" elevation={0} sx={{ bgcolor: 'background.paper', color: 'text.primary' }}>
       <Toolbar sx={{ justifyContent: 'space-between' }}>
         <Typography 
           variant="h6" 
@@ -29,7 +31,7 @@ const Header = () => {
           ShortURL
         </Typography>
         
-        <Box sx={{ display: 'flex', gap: 1 }}>
+        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
           <Button 
             component={Link}
             to="/"
@@ -98,6 +100,11 @@ const Header = () => {
               Sign In
             </Button>
           )}
+          <Tooltip title={mode === 'light' ? 'Enable dark mode' : 'Disable dark mode'}>
+            <IconButton color="inherit" onClick={onToggleTheme} aria-label="toggle theme">
+              {mode === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
+            </IconButton>
+          </Tooltip>
         </Box>
       </Toolbar>
     </AppBar>
