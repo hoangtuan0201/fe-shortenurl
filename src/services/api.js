@@ -19,5 +19,21 @@ export const shortenUrl = async (longUrl) => {
     throw error;
   }
 };
+// Admin: fetch URLs with pagination (requires JWT)
+export const getAdminUrls = async (token, page = 1, pageSize = 20) => {
+  try {
+    const response = await axios.get('https://be-shortenurl.onrender.com/api/admin/urls', {
+      params: { page, pageSize },
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data; // { Page, PageSize, Data }
+  } catch (error) {
+    console.error('Error fetching admin URLs:', error);
+    throw error;
+  }
+};
+
+
+
 
 export default api;
