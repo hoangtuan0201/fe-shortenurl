@@ -20,4 +20,11 @@ export const shortenUrl = async (longUrl) => {
   }
 };
 
+export function buildQrUrlFromShortLink(shortLink) {
+  const parts = shortLink.split("/");
+  const code = parts[parts.length - 1];
+  return `https://be-shortenurl-az8u.onrender.com/qr/${code}`;
+}
+
 export default api;
+
