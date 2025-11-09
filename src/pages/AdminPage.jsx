@@ -101,10 +101,10 @@ const AdminPage = () => {
               <Table stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell sx={{ fontWeight: 700, bgcolor: 'grey.50', width: 100 }}>ID</TableCell>
-                    <TableCell sx={{ fontWeight: 700, bgcolor: 'grey.50' }}>Short Link</TableCell>
-                    <TableCell sx={{ fontWeight: 700, bgcolor: 'grey.50' }}>Original URL</TableCell>
-                    <TableCell sx={{ fontWeight: 700, bgcolor: 'grey.50', width: 180 }}>Created</TableCell>
+                    <TableCell sx={{ fontWeight: 700, bgcolor: (theme) => theme.palette.mode === 'dark' ? 'action.selected' : 'grey.50', width: 100 }}>ID</TableCell>
+                    <TableCell sx={{ fontWeight: 700, bgcolor: (theme) => theme.palette.mode === 'dark' ? 'action.selected' : 'grey.50' }}>Short Link</TableCell>
+                    <TableCell sx={{ fontWeight: 700, bgcolor: (theme) => theme.palette.mode === 'dark' ? 'action.selected' : 'grey.50' }}>Original URL</TableCell>
+                    <TableCell sx={{ fontWeight: 700, bgcolor: (theme) => theme.palette.mode === 'dark' ? 'action.selected' : 'grey.50', width: 180 }}>Created</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
