@@ -13,12 +13,14 @@ import {
   Container
 } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import DownloadIcon from '@mui/icons-material/Download';
 import LinkIcon from '@mui/icons-material/Link';
-import { shortenUrl } from '../services/api';
+import { shortenUrl, buildQrUrlFromShortLink } from '../services/api';
 
 const ShortenPage = () => {
   const [url, setUrl] = useState('');
   const [shortUrl, setShortUrl] = useState('');
+  const [qrUrl, setQrUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -49,9 +51,11 @@ const ShortenPage = () => {
     try {
       const response = await shortenUrl(url);
       setShortUrl(response.shortLink);
+      setQrUrl(buildQrUrlFromShortLink(response.shortLink));
       setLoading(false);
     } catch (err) {
       setError('An error occurred while shortening the URL');
+      setQrUrl('');
       setLoading(false);
     }
   };
@@ -148,8 +152,44 @@ const ShortenPage = () => {
                 <ContentCopyIcon />
               </IconButton>
             </Box>
+
+            {/* QR preview + download */}
+            {qrUrl && (
+              <Box sx={{ mt: 3, textAlign: 'center' }}>
+                <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
+                  QR Code:
+                </Typography>
+                <Box
+                  component="img"
+                  src={qrUrl}
+                  alt="QR Code"
+                  loading="eager"
+                  sx={{
+                    width: 200,
+                    height: 200,
+                    border: '1px solid',
+                    borderColor: 'divider',
+                    borderRadius: 2,
+                    backgroundColor: '#fff',
+                    p: 1,
+                  }}
+                />
+                <Box sx={{ mt: 1 }}>
+                  <Button
+                    component="a"
+                    href={qrUrl}
+                    download={`qr-${shortUrl.split('/').pop()}.png`}
+                    startIcon={<DownloadIcon />}
+                    sx={{ textTransform: 'none' }}
+                  >
+                    Download QR (PNG)
+                  </Button>
+                </Box>
+              </Box>
+            )}
           </Box>
         )}
+        
       </Paper>
 
       <Snackbar 

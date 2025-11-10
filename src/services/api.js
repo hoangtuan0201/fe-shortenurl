@@ -33,6 +33,18 @@ export const getAdminUrls = async (token, page = 1, pageSize = 20) => {
   }
 };
 
+// Build QR image URL from a short link
+export const buildQrUrlFromShortLink = (shortLink) => {
+  if (!shortLink) return '';
+  try {
+    const parts = String(shortLink).split('/');
+    const code = parts[parts.length - 1];
+    return `https://be-shortenurl-az8u.onrender.com/qr/${code}`;
+  } catch (_) {
+    return '';
+  }
+};
+
 
 
 
