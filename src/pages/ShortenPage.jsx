@@ -10,58 +10,64 @@ import {
   Alert,
   IconButton,
   InputAdornment,
-  Container,
-  Stack
+  Container
 } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DownloadIcon from '@mui/icons-material/Download';
 import LinkIcon from '@mui/icons-material/Link';
-import { shortenUrl } from '../services/api';
+import { shortenUrl, buildQrUrlFromShortLink } from '../services/api';
 
 const ShortenPage = () => {
   const [url, setUrl] = useState('');
   const [shortUrl, setShortUrl] = useState('');
-  const [qrUrl, setQrUrl] = useState('');          // ← add QR url state
+  const [qrUrl, setQrUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
-  const handleUrlChange = (e) => setUrl(e.target.value);
+  const handleUrlChange = (e) => {
+    setUrl(e.target.value);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!url) { setError('Please enter a URL'); return; }
+    
+    if (!url) {
+      setError('Please enter a URL');
+      return;
+    }
 
     // Validate URL
-    try { new URL(url); } 
-    catch { setError('Invalid URL'); return; }
+    try {
+      new URL(url);
+    } catch (err) {
+      setError('Invalid URL');
+      return;
+    }
 
     setLoading(true);
     setError('');
-    setShortUrl('');
-    setQrUrl('');
 
     try {
       const response = await shortenUrl(url);
-      const link = response.shortLink;                 // e.g. https://be-shortenurl-az8u.onrender.com/abc123
-      setShortUrl(link);
-
-      const code = link.split('/').pop();              // abc123
-      setQrUrl(`https://be-shortenurl-az8u.onrender.com/qr/${code}`);
-    } catch {
+      setShortUrl(response.shortLink);
+      setQrUrl(buildQrUrlFromShortLink(response.shortLink));
+      setLoading(false);
+    } catch (err) {
       setError('An error occurred while shortening the URL');
-    } finally {
+      setQrUrl('');
       setLoading(false);
     }
   };
 
   const copyToClipboard = () => {
-    if (!shortUrl) return;
-    navigator.clipboard.writeText(shortUrl).catch(() => {});
+    navigator.clipboard.writeText(shortUrl);
     setOpenSnackbar(true);
   };
 
-  const handleCloseSnackbar = () => setOpenSnackbar(false);
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
 
   return (
     <Container maxWidth="sm" sx={{ minHeight: '60vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
@@ -95,7 +101,11 @@ const ShortenPage = () => {
               mb: 3,
               '& .MuiOutlinedInput-root': {
                 borderRadius: 2,
-                backgroundColor: 'grey.50'
+                bgcolor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.06)' : 'grey.50'
+              },
+              '& input::placeholder': {
+                color: 'text.secondary',
+                opacity: 1
               }
             }}
           />
@@ -123,8 +133,7 @@ const ShortenPage = () => {
             <Typography variant="caption" color="text.secondary" sx={{ mb: 2, display: 'block' }}>
               Shortened URL:
             </Typography>
-
-            <Stack direction="row" spacing={1} alignItems="center">
+            <Box sx={{ display: 'flex', gap: 1 }}>
               <TextField
                 fullWidth
                 variant="outlined"
@@ -139,11 +148,10 @@ const ShortenPage = () => {
                 onClick={copyToClipboard} 
                 color="primary"
                 sx={{ border: '1px solid', borderColor: 'primary.main', borderRadius: 2 }}
-                aria-label="Copy short URL"
               >
                 <ContentCopyIcon />
               </IconButton>
-            </Stack>
+            </Box>
 
             {/* QR preview + download */}
             {qrUrl && (
@@ -181,6 +189,7 @@ const ShortenPage = () => {
             )}
           </Box>
         )}
+        
       </Paper>
 
       <Snackbar 

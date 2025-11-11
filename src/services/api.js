@@ -1,60 +1,40 @@
-// import axios from 'axios';
+// src/services/api.js
+import axios from "axios";
 
-// // Create axios instance with default configuration
-// const api = axios.create({
-//   baseURL: 'https://be-shortenurl.onrender.com/api/shorturl',
-//   timeout: 10000,
-//   headers: {
-//     'Content-Type': 'application/json',
-//   }
-// });
+const API_BASE = import.meta.env.VITE_API_URL || "https://be-shortenurl.onrender.com";
 
-// // URL shortening service /api/shorturl
-// export const shortenUrl = async (longUrl) => {
-//   try {
-//     const response = await api.post('', { originalUrl: longUrl });
-//     return response.data;
-//   } catch (error) {
-//     console.error('Error shortening URL:', error);
-//     throw error;
-//   }
-// };
-
-// export function buildQrUrlFromShortLink(shortLink) {
-//   const parts = shortLink.split("/");
-//   const code = parts[parts.length - 1];
-//   return `https://be-shortenurlonrender.com/qr/${code}`;
-// }
-
-// export default api;
-import axios from 'axios';
-
-// Create axios instance with default configuration
 const api = axios.create({
-  baseURL: 'https://tinyurl.com/api/v1',
-  timeout: 10000,
-  headers: {
-    'Content-Type': 'application/json',
-  }
+    baseURL: `${API_BASE}/api`,
+    timeout: 15000,
+    headers: { "Content-Type": "application/json" }
 });
 
-// URL shortening service using TinyURL API
-export const shortenUrl = async (longUrl) => {
-  try {
-    // Using TinyURL's public API
-    const response = await axios.get('https://tinyurl.com/api-create.php', {
-      params: { url: longUrl }
-    });
-    
-    return {
-      originalUrl: longUrl,
-      shortUrl: response.data,
-      createdAt: new Date().toISOString()
-    };
-  } catch (error) {
-    console.error('Error shortening URL:', error);
-    throw error;
-  }
-};
+// optional: cleaner error messages
+api.interceptors.response.use(
+    r => r,
+    err => {
+        const res = err.response;
+        const msg =
+            res?.data?.message ||
+            res?.data?.error ||
+            res?.statusText ||
+            err.message ||
+            "Network error";
+        return Promise.reject({ status: res?.status, message: msg });
+    }
+);
+
+// Create short link
+export async function shortenUrl(longUrl) {
+    const r = await api.post("/ShortUrl", { originalUrl: longUrl }); // <-- match casing
+    return r.data;
+}
+
+// Admin list (open route on BE: GET /api/ShortUrl/all)
+export async function getAdminUrls(page = 1, pageSize = 20) {
+    const r = await api.get("/ShortUrl/all", { params: { page, pageSize } });
+    const total = Number(r.headers["x-total-count"] || 0);
+    return { items: r.data, total, page, pageSize };
+}
 
 export default api;
