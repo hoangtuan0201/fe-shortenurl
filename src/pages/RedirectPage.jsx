@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useParams, Link as RouterLink } from "react-router-dom";
 import { Box, CircularProgress, Typography, Link } from '@mui/material';
 
-const BASE_REDIRECT = 'https://shortenurl-35ch.onrender.com';
+const BASE_REDIRECT = 'https://be-shortenurl.onrender.com';
 
 export default function RedirectPage() {
   const { code } = useParams();
