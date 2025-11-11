@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create axios instance with default configuration
 const api = axios.create({
-  baseURL: 'https://be-shortenurl-az8u.onrender.com/api/shorturl',
+  baseURL: 'https://be-shortenurl.onrender.com/api/shorturl',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
@@ -23,7 +23,7 @@ export const shortenUrl = async (longUrl) => {
 export function buildQrUrlFromShortLink(shortLink) {
   const parts = shortLink.split("/");
   const code = parts[parts.length - 1];
-  return `https://be-shortenurl-az8u.onrender.com/qr/${code}`;
+  return `https://be-shortenurlonrender.com/qr/${code}`;
 }
 
 export default api;
