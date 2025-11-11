@@ -21,6 +21,7 @@ const ShortenPage = () => {
   const [url, setUrl] = useState('');
   const [shortUrl, setShortUrl] = useState('');
   const [qrUrl, setQrUrl] = useState('');
+  const [qrLoading, setQrLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -40,7 +41,7 @@ const ShortenPage = () => {
     // Validate URL
     try {
       new URL(url);
-    } catch (err) {
+    } catch {
       setError('Invalid URL');
       return;
     }
@@ -51,11 +52,14 @@ const ShortenPage = () => {
     try {
       const response = await shortenUrl(url);
       setShortUrl(response.shortLink);
-      setQrUrl(buildQrUrlFromShortLink(response.shortLink));
+      const built = buildQrUrlFromShortLink(response.shortLink);
+      setQrUrl(built);
+      setQrLoading(!!built);
       setLoading(false);
-    } catch (err) {
+    } catch {
       setError('An error occurred while shortening the URL');
       setQrUrl('');
+      setQrLoading(false);
       setLoading(false);
     }
   };
@@ -159,27 +163,46 @@ const ShortenPage = () => {
                 <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
                   QR Code:
                 </Typography>
-                <Box
-                  component="img"
-                  src={qrUrl}
-                  alt="QR Code"
-                  loading="eager"
-                  sx={{
-                    width: 200,
-                    height: 200,
-                    border: '1px solid',
-                    borderColor: 'divider',
-                    borderRadius: 2,
-                    backgroundColor: '#fff',
-                    p: 1,
-                  }}
-                />
+                <Box sx={{ position: 'relative', display: 'inline-block' }}>
+                  <Box
+                    component="img"
+                    src={qrUrl}
+                    alt="QR Code"
+                    loading="eager"
+                    onLoad={() => setQrLoading(false)}
+                    onError={() => setQrLoading(false)}
+                    sx={{
+                      width: 200,
+                      height: 200,
+                      border: '1px solid',
+                      borderColor: 'divider',
+                      borderRadius: 2,
+                      backgroundColor: '#fff',
+                      p: 1,
+                      display: 'block'
+                    }}
+                  />
+                  {qrLoading && (
+                    <Box sx={{
+                      position: 'absolute',
+                      inset: 0,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      bgcolor: (theme) => theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.6)',
+                      borderRadius: 2
+                    }}>
+                      <CircularProgress size={32} />
+                    </Box>
+                  )}
+                </Box>
                 <Box sx={{ mt: 1 }}>
                   <Button
                     component="a"
                     href={qrUrl}
                     download={`qr-${shortUrl.split('/').pop()}.png`}
                     startIcon={<DownloadIcon />}
+                    disabled={qrLoading}
                     sx={{ textTransform: 'none' }}
                   >
                     Download QR (PNG)
