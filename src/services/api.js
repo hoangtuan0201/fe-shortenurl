@@ -39,7 +39,7 @@ export const buildQrUrlFromShortLink = (shortLink) => {
   try {
     const parts = String(shortLink).split('/');
     const code = parts[parts.length - 1];
-    return `https://be-shortenurl-az8u.onrender.com/qr/${code}`;
+    return `https://be-shortenurl.onrender.com/qr/${code}`;
   } catch (error) {
     console.error('Error building QR URL:', error);
     return '';
